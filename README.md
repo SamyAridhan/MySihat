@@ -45,3 +45,44 @@ struct VisitRecord {
 
 // Circular Write Logic
 header->head_idx = (header->head_idx + 1) % header->max_capacity;
+
+## The "Codebook" Compression Strategy
+
+We utilize a lookup dictionary to maximize storage efficiency.
+
+| Data Type | Raw Text Size | MySihat Code Size | Reduction |
+|-----------|---------------|-------------------|-----------|
+| Diagnosis | "Essential Hypertension" (22 bytes) | `I10` (3 bytes) | ~86% |
+| Medication | "Paracetamol 500mg" (17 bytes) | `N02BE01` (7 bytes) | ~59% |
+
+---
+
+## 🧪 How to Test This Project
+
+### 1. The Interactive Simulator (React)
+
+We built a visual simulator to demonstrate the doctor's workflow and the data lifecycle.
+
+- **[Click Here to Try the Live Demo](#)** *(Replace # with your actual Vercel URL)*
+- **What to look for:** Notice how the "Storage Used" bar updates instantly when you save a record, and how older records are cycled out when capacity is reached.
+
+### 2. The Core Driver Logic (C++)
+
+To see the actual embedded engineering code:
+
+- Go to `/driver/mysihat_core.cpp`
+- **Key Logic:** 
+  - Check line 45 for the `Circular Buffer` implementation
+  - Check line 12 for the `Bit-Packing` structs
+
+---
+
+## 🛡️ Security & Privacy
+
+- **Write Access:** Restricted to authorized Clinic PCs via cryptographic handshake
+- **Read Access:** Open for Emergency Data (Allergies), restricted for History
+- **Sync:** Data is stored locally on the Clinic PC in an encrypted blob until the "Smart-Sync" worker detects an active internet connection
+
+---
+
+> **"My Sihat: Guaranteeing equitable healthcare through engineering."**
