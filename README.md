@@ -46,6 +46,7 @@ struct VisitRecord {
 // Circular Write Logic
 header->head_idx = (header->head_idx + 1) % header->max_capacity;
 
+```
 ## The "Codebook" Compression Strategy
 
 We utilize a lookup dictionary to maximize storage efficiency.
