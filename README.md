@@ -1,4 +1,4 @@
-# My Sihat: Offline-First National Health Record System
+# My Sihat: An offline-first medical storage protocol using C++ bit-packing and circular buffering to fit 10 years of history on a 32KB chip.
 
 **My Sihat** is a decentralized, offline-first healthcare record system designed to bridge the connectivity gap in rural Malaysia. It utilizes the Malaysian National ID (MyKad) as a secure, high-density offline cache for medical history, ensuring equitable healthcare access regardless of internet availability.
 
