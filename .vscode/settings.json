@@ -1,6 +1,7 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "c:\\javacard-sdk-2.2.2\\java_card_kit-2_2_2\\java_card_kit-2_2_2-rr-bin-windows-do\\lib\\api.jar"
+        "c:\\javacard-sdk-2.2.2\\java_card_kit-2_2_2\\java_card_kit-2_2_2-rr-bin-windows-do\\lib\\api.jar",
+        "c:\\javacard-sdk-2.2.2\\lib\\api.jar"
     ]
 }

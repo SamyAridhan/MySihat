@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MySihat" default="all" basedir=".">
+
+    <property name="javacard.sdk.dir" value="C:\javacard-sdk-2.2.2"/>
+    <property name="build.dir"        value="build"/>
+
+    <taskdef name="javacard"
+             classname="pro.javacard.ant.JavaCard"
+             classpath="..\tools\ant-javacard.jar"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <echo message="Build directory cleaned."/>
+    </target>
+
+    <target name="build">
+        <mkdir dir="${build.dir}"/>
+
+        <javacard jckit="${javacard.sdk.dir}">
+            <cap output="${build.dir}/MySihat.cap"
+                aid="A0:00:00:00:62:03:01:0C"
+                version="1.0"
+                sources="src">
+                <applet class="com.mysihat.MySihatApplet"
+                        aid="A0:00:00:00:62:03:01:0C:01"/>
+            </cap>
+        </javacard>
+
+        <echo message=""/>
+        <echo message="=============================================="/>
+        <echo message=" BUILD SUCCESSFUL"/>
+        <echo message=" CAP file: ${build.dir}\MySihat.cap"/>
+        <echo message=""/>
+        <echo message=" To load onto card:"/>
+        <echo message=" java -jar tools\gp.jar --install build\MySihat.cap"/>
+        <echo message="=============================================="/>
+    </target>
+
+    <target name="all" depends="clean,build"/>
+
+</project>
