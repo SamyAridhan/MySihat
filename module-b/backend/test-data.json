@@ -1,0 +1,11 @@
+{
+  "patientId": "MY-2026-000142",
+  "notes": "Mock card data for HARDWARE_MODE=false. Hex values verified by test-codebook.js Test 5.",
+  "records": [
+    "000100013468",
+    "000200033461",
+    "000400013425",
+    "000300023388",
+    "000500043370"
+  ]
+}
