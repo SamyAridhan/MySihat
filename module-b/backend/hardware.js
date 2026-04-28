@@ -3,26 +3,26 @@
 /**
  * hardware.js — Hardware Abstraction Layer
  *
- * Exposes exactly four functions to the rest of Module B.
  * HARDWARE_MODE=false → mock implementations (no physical card needed)
- * HARDWARE_MODE=true  → real APDU calls via Module C (requires card + reader)
+ * HARDWARE_MODE=true  → real APDU calls via Module C card-service.js
  *
- * The function signatures never change between modes.
- * All route handlers call these four functions only — they never talk to
- * the card layer directly. This is what makes Module B fully testable
- * without any hardware.
+ * The four function signatures never change between modes.
+ * Nothing outside this file knows which mode is active.
  */
-
-const path = require('path');
 
 const HARDWARE_MODE = process.env.HARDWARE_MODE === 'true';
 
-// ─── Mock implementations ────────────────────────────────────────────────────
+// ─── Module C (real hardware) ─────────────────────────────────────────────────
+// Only required when HARDWARE_MODE=true — avoids crashing in mock mode
+// if card-service dependencies (pcsclite) are not installed.
 
-/**
- * Mock: reads pre-encoded test records from test-data.json.
- * Returns the same type as the real implementation: Array<Buffer(6)>
- */
+let cardService;
+if (HARDWARE_MODE) {
+    cardService = require('../../module-c/card-service');
+}
+
+// ─── Mock implementations ─────────────────────────────────────────────────────
+
 async function mockReadAllRecords() {
     const testData = require('./test-data.json');
     return testData.records.map(hex => Buffer.from(hex, 'hex'));
@@ -43,41 +43,15 @@ async function mockGetMetadata() {
     return { head: testData.records.length, tail: 0, count: testData.records.length };
 }
 
-// ─── Real implementations (Module C stubs) ───────────────────────────────────
-// These will be replaced with actual Module C APDU calls in Phase 3.
-// The stubs throw explicitly so any accidental call in HARDWARE_MODE=true
-// fails loudly rather than silently returning wrong data.
-
-async function realReadAllRecords() {
-    // TODO (Module C): replace with cardLayer.cardReadAllRecords()
-    throw new Error('realReadAllRecords() not yet implemented. Build Module C first.');
-}
-
-async function realWriteRecord(sixByteBuffer) {
-    // TODO (Module C): replace with cardLayer.cardWriteRecord(sixByteBuffer)
-    throw new Error('realWriteRecord() not yet implemented. Build Module C first.');
-}
-
-async function realReadPatientId() {
-    // TODO (Module C): replace with cardLayer.cardReadPatientId()
-    throw new Error('realReadPatientId() not yet implemented. Build Module C first.');
-}
-
-async function realGetMetadata() {
-    // TODO (Module C): replace with cardLayer.cardGetMetadata()
-    throw new Error('realGetMetadata() not yet implemented. Build Module C first.');
-}
-
 // ─── Exported interface ───────────────────────────────────────────────────────
-// Route handlers import these four names only. The mode switch is invisible
-// to everything outside this file.
 
 /**
  * cardReadAllRecords()
  * @returns {Promise<Buffer[]>} — array of 6-byte Buffers, one per record
  */
 async function cardReadAllRecords() {
-    return HARDWARE_MODE ? realReadAllRecords() : mockReadAllRecords();
+    if (HARDWARE_MODE) return cardService.cardReadAllRecords();
+    return mockReadAllRecords();
 }
 
 /**
@@ -89,15 +63,17 @@ async function cardWriteRecord(sixByteBuffer) {
     if (!Buffer.isBuffer(sixByteBuffer) || sixByteBuffer.length !== 6) {
         throw new Error(`cardWriteRecord requires exactly 6 bytes. Got ${sixByteBuffer?.length}.`);
     }
-    return HARDWARE_MODE ? realWriteRecord(sixByteBuffer) : mockWriteRecord(sixByteBuffer);
+    if (HARDWARE_MODE) return cardService.cardWriteRecord(sixByteBuffer);
+    return mockWriteRecord(sixByteBuffer);
 }
 
 /**
  * cardReadPatientId()
- * @returns {Promise<string>} — patient ID string (up to 16 ASCII chars)
+ * @returns {Promise<string>} — patient ID string
  */
 async function cardReadPatientId() {
-    return HARDWARE_MODE ? realReadPatientId() : mockReadPatientId();
+    if (HARDWARE_MODE) return cardService.cardReadPatientId();
+    return mockReadPatientId();
 }
 
 /**
@@ -105,7 +81,8 @@ async function cardReadPatientId() {
  * @returns {Promise<{head: number, tail: number, count: number}>}
  */
 async function cardGetMetadata() {
-    return HARDWARE_MODE ? realGetMetadata() : mockGetMetadata();
+    if (HARDWARE_MODE) return cardService.cardGetMetadata();
+    return mockGetMetadata();
 }
 
 module.exports = {
