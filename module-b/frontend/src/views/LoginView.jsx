@@ -107,13 +107,7 @@ export default function LoginView({ onLogin }) {
         alignItems: 'center',
         gap: 6
       }}>
-        <span style={{
-          width: 6, height: 6,
-          borderRadius: '50%',
-          background: '#F59E0B',
-          display: 'inline-block'
-        }} />
-        MOCK MODE — no hardware required
+
       </div>
     </div>
   );
