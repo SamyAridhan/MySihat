@@ -10,7 +10,7 @@
 
 ## 🔗 Quick Links
 
-- 🎬 **[Demo Video](#youtube-placeholder)** — Full end-to-end hardware demo *(YouTube link coming soon)*
+- 🎬 **[Demo Video](https://youtu.be/XbPvEuUyJkM?si=66hwaejAcwHw6qT5)** — Full end-to-end hardware demo *(YouTube link coming soon)*
 
 ---
 
